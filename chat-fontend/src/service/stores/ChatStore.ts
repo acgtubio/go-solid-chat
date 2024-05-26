@@ -2,7 +2,7 @@ import { createStore } from "solid-js/store";
 
 export const createHistoryStore = () => {
   const [messages, setMessages] = createStore({
-    messageHistory: ["a", "b", "c", "d"],
+    messageHistory: [],
   });
 
   // TODO: Set message history type
@@ -10,6 +10,14 @@ export const createHistoryStore = () => {
     setMessages('messageHistory', (history) => [...messageHistory]);
   }
 
-  return [messages, setMessageHistory];
+  const addMessage = (message: any, index: number) => {
+    console.group("Adding Message");
+    console.info(index);
+    console.info(message);
+    console.groupEnd();
+    setMessages('messageHistory', index + 1, message);
+  }
+
+  return [messages, setMessageHistory, addMessage];
 }
 

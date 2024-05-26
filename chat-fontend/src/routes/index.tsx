@@ -1,10 +1,6 @@
 import { Title } from "@solidjs/meta";
 import { clientOnly } from "@solidjs/start";
 
-const WsButton = clientOnly(() => {
-  return import("~/components/WebsocketButton");
-});
-
 const ChatWindow = clientOnly(() => {
   return import("~/components/ChatWindow");
 });

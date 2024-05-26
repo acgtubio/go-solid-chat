@@ -1,28 +1,31 @@
-const socket = new WebSocket("ws://localhost:8080/ws");
+export const createChatWebsocket = () => {
+    const socket = new WebSocket("ws://localhost:8080/ws");
 
-const connect = () => {
-    console.log("Connecting...");
+    const connect = (cb) => {
+        console.log("Connecting...");
 
-    socket.onopen = () => {
-        console.log("Successfully connected");
+        socket.onopen = () => {
+            console.log("Successfully connected");
+        }
+
+        socket.onmessage = (msg) => {
+            console.log(msg);
+            cb(msg.data);
+        }
+
+        socket.onclose = (e) => {
+            console.log("Socket closed: ", e);
+        }
+
+        socket.onerror = (e) => {
+            console.error("Socket error: ", e);
+        }
     }
 
-    socket.onmessage = (msg) => {
-        console.log(msg);
+    const sendMsg = (msg) => {
+        console.log("Sending message: ", msg);
+        socket.send(msg);
     }
 
-    socket.onclose = (e) => {
-        console.log("Socket closed: ", e);
-    }
-
-    socket.onerror = (e) => {
-        console.error("Socket error: ", e);
-    }
+    return [connect, sendMsg];
 }
-
-const sendMsg = (msg) => {
-    console.log("Sending message: ", msg);
-    socket.send(msg);
-}
-
-export { connect, sendMsg };
