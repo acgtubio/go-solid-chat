@@ -1,7 +1,6 @@
 import { createHistoryStore } from "~/service/stores/ChatStore";
-import { For, createEffect, createSignal } from "solid-js";
+import { For, createEffect } from "solid-js";
 import { createChatWebsocket } from "~/service/websocket";
-//import { connect, sendMsg } from "~/service/websocket";
 
 const ChatWindow = () => {
   const [messages, setMessageHistory, addMessage] = createHistoryStore();
@@ -34,11 +33,13 @@ const ChatWindow = () => {
       <div class="mb-2">
         <h1 class="text-white">Chat Logs</h1>
       </div>
+
       <div>
         <For each={messageList}>{(message, i) => {
           return <p class="text-white">{message}</p>
         }}</For>
       </div>
+
       <div
         class="absolute bottom-10 right-10 left-10 py-3 px-5 border border-slate-700 background rounded-xl has-[:focus]:border-slate-500"
         onClick={focusOnInput}
