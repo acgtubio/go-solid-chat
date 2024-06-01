@@ -11,10 +11,6 @@ export const createHistoryStore = () => {
   }
 
   const addMessage = (message: any, index: number) => {
-    console.group("Adding Message");
-    console.info(index);
-    console.info(message);
-    console.groupEnd();
     setMessages('messageHistory', index + 1, message);
   }
 
