@@ -1,4 +1,4 @@
-package routes
+package websocket
 
 import (
 	"fmt"
@@ -14,30 +14,25 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin:     func(r *http.Request) bool { return true },
 }
 
-func NewChatServer() http.Handler {
-	mux := http.NewServeMux()
+func ChatHandler(w http.ResponseWriter, r *http.Request) {
+	ws, err := upgrade(w, r)
 
-	mux.HandleFunc("/ws", wsUpgrade)
-	mux.HandleFunc("/test", testHandler)
+	if err != nil {
+		fmt.Fprintf(w, "%+V\n", err)
+	}
 
-	return mux
+	reader(ws)
 }
 
-func testHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "This is the test route")
-}
-
-func wsUpgrade(w http.ResponseWriter, r *http.Request) {
+func upgrade(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
 
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
-
-		// TODO: Determine if return is needed. I put this here because it is intuitive to return if there is an error.
-		return
+		return ws, err
 	}
 
-	reader(ws)
+	return ws, nil
 }
 
 func reader(conn *websocket.Conn) {
@@ -50,6 +45,7 @@ func reader(conn *websocket.Conn) {
 		}
 
 		fmt.Println(string(p))
+		fmt.Println(messageType)
 
 		if err := conn.WriteMessage(messageType, p); err != nil {
 			log.Println(err)
