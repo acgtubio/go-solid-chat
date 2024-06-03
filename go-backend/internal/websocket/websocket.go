@@ -1,10 +1,12 @@
 package websocket
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/acgtubio/go-solid-chat/internal/chat"
 	"github.com/gorilla/websocket"
 )
 
@@ -44,7 +46,10 @@ func reader(conn *websocket.Conn) {
 			return
 		}
 
-		fmt.Println(string(p))
+		var m chat.MessageBody
+		err = json.Unmarshal(p, &m)
+		fmt.Println(m.Content)
+
 		fmt.Println(messageType)
 
 		if err := conn.WriteMessage(messageType, p); err != nil {

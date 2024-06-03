@@ -1,6 +1,7 @@
 package chat
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 
@@ -19,22 +20,33 @@ func (c *Client) Read() {
 	}()
 
 	for {
-		_, body, err := c.Conn.ReadMessage()
+		var messageBody MessageBody
+		messageType, body, err := c.Conn.ReadMessage()
 
 		if err != nil {
 			log.Println(err)
-
 			// TODO: Create functionality to return this to client to indicate message has not been sent.
 			return
 		}
 
+		err = json.Unmarshal(body, &messageBody)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		room := messageBody.RoomID
+
 		message := Message{
-			Type:   "Test",
-			Author: c.ID,
-			RoomID: "Default",
-			Body:   string(body),
+			Type: messageType,
+			Body: messageBody,
 		}
 
+		for _, r := range c.Rooms {
+			if r.ID == room {
+				r.Broadcast <- message
+				break
+			}
+		}
 		fmt.Println(message)
 	}
 }

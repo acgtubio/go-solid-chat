@@ -24,7 +24,7 @@ export const createChatWebsocket = () => {
 
     const sendMsg = (msg) => {
         console.log("Sending message: ", msg);
-        socket.send(msg);
+        socket.send(JSON.stringify(msg));
     }
 
     return [connect, sendMsg];

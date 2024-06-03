@@ -25,7 +25,12 @@ const ChatWindow = () => {
     }
     e.preventDefault();
 
-    sendMsg(messageInput.textContent);
+    sendMsg({
+      messageType: "msg",
+      author: "eyd",
+      roomId: "0",
+      content: messageInput.textContent
+    });
   }
 
   return (

@@ -1,8 +1,13 @@
 package chat
 
 type Message struct {
-	RoomID string `json:"roomId"`
-	Author string `json:"author"`
-	Type   string `json:"type"`
-	Body   string `json:"body"`
+	Type int         `json:"type"`
+	Body MessageBody `json:"body"`
+}
+
+type MessageBody struct {
+	Type    string `json:"messageType"`
+	Author  string `json:"author"`
+	RoomID  string `json:"roomId"`
+	Content string `json:"content"`
 }
