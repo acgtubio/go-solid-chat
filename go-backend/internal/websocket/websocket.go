@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/acgtubio/go-solid-chat/internal/chat"
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -16,14 +17,18 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin:     func(r *http.Request) bool { return true },
 }
 
-func ChatHandler(w http.ResponseWriter, r *http.Request) {
+func ChatHandler(chatRoom *chat.Rooms, w http.ResponseWriter, r *http.Request) {
 	ws, err := upgrade(w, r)
 
 	if err != nil {
 		fmt.Fprintf(w, "%+V\n", err)
 	}
 
-	reader(ws)
+	// reader(ws)
+	client := chat.Client{
+		ID:   uuid.NewString(),
+		Conn: ws,
+	}
 }
 
 func upgrade(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
