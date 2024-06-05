@@ -11,7 +11,7 @@ import (
 type Client struct {
 	ID    string
 	Conn  *websocket.Conn
-	Rooms []Room
+	Rooms []*Room
 }
 
 func (c *Client) Read() {
@@ -49,4 +49,8 @@ func (c *Client) Read() {
 		}
 		fmt.Println(message)
 	}
+}
+
+func (c *Client) JoinRoom(r *Room) {
+	c.Rooms = append(c.Rooms, r)
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func NewChatServer() http.Handler {
-	chatRoom := chat.CreateRooms()
+	chatRoom := CreateChatRooms()
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
@@ -18,9 +18,9 @@ func NewChatServer() http.Handler {
 	return mux
 }
 
-func createChatRooms() *chat.Rooms {
+func CreateChatRooms() *chat.Rooms {
 	rooms := chat.CreateRooms()
-	rooms.Start()
+	go rooms.Start()
 
 	defaultRoom := chat.Room{
 		ID:         "0",

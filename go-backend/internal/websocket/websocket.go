@@ -24,11 +24,17 @@ func ChatHandler(chatRoom *chat.Rooms, w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "%+V\n", err)
 	}
 
+	if len(chatRoom.RoomCollection) == 0 {
+		fmt.Fprintf(w, "Internal Error\n")
+	}
+
 	// reader(ws)
 	client := chat.Client{
 		ID:   uuid.NewString(),
 		Conn: ws,
 	}
+
+	client.Read()
 }
 
 func upgrade(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
