@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -14,6 +15,16 @@ type Client struct {
 	Rooms []*Room
 }
 
+func NewClient(ws *websocket.Conn) *Client {
+	return &Client{
+		ID:    uuid.NewString(),
+		Conn:  ws,
+		Rooms: []*Room{},
+	}
+}
+
+// Reads messages from websocket connection. Message received from the client
+// will be parsed into the MessageBody struct, then send the message to all the clients in the room.
 func (c *Client) Read() {
 	defer func() {
 		c.Conn.Close()
@@ -34,23 +45,23 @@ func (c *Client) Read() {
 			log.Println(err)
 			return
 		}
-		room := messageBody.RoomID
-
 		message := Message{
 			Type: messageType,
 			Body: messageBody,
 		}
 
+		roomID := messageBody.RoomID
 		for _, r := range c.Rooms {
-			if r.ID == room {
+			if r.ID == roomID {
 				r.Broadcast <- message
 				break
 			}
 		}
-		fmt.Println(message)
 	}
 }
 
+// Susbscribes the client to the room, and adds the room to the list of rooms the client is connected to.
 func (c *Client) JoinRoom(r *Room) {
+	r.Register <- c
 	c.Rooms = append(c.Rooms, r)
 }

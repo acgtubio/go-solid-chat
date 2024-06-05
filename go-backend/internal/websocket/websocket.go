@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/acgtubio/go-solid-chat/internal/chat"
-	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -18,22 +17,24 @@ var upgrader = websocket.Upgrader{
 }
 
 func ChatHandler(chatRoom *chat.Rooms, w http.ResponseWriter, r *http.Request) {
+	log.Println("Upgrading to websocket connection...")
 	ws, err := upgrade(w, r)
 
 	if err != nil {
 		fmt.Fprintf(w, "%+V\n", err)
 	}
+	log.Println("Successfully upgraded connection.")
 
 	if len(chatRoom.RoomCollection) == 0 {
 		fmt.Fprintf(w, "Internal Error\n")
 	}
 
-	// reader(ws)
-	client := chat.Client{
-		ID:   uuid.NewString(),
-		Conn: ws,
-	}
+	// TODO: Do not use default room.
+	defaultRoom := chatRoom.RoomCollection[0]
 
+	client := chat.NewClient(ws)
+	client.JoinRoom(defaultRoom)
+	log.Println("Room joined.")
 	client.Read()
 }
 

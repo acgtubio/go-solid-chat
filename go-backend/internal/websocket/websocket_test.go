@@ -13,4 +13,8 @@ func TestCreateRooms(t *testing.T) {
 	if length != wantLength {
 		t.Errorf("got %q, wanted %q", length, wantLength)
 	}
+
+	if rooms.RoomCollection[0] == nil {
+		t.Errorf("Default room should not be empty.")
+	}
 }

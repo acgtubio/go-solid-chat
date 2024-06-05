@@ -28,8 +28,9 @@ func CreateChatRooms() *chat.Rooms {
 		Register:   make(chan *chat.Client),
 		Unregister: make(chan string),
 		Broadcast:  make(chan chat.Message),
-		Members:    []chat.Client{},
+		Members:    []*chat.Client{},
 	}
+	go defaultRoom.Start()
 
 	rooms.RegisterRoom <- &defaultRoom
 
