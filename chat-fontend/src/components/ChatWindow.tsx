@@ -1,16 +1,17 @@
 import { createHistoryStore } from "~/service/stores/ChatStore";
 import { For, createEffect } from "solid-js";
 import { createChatWebsocket } from "~/service/websocket";
+import Message, { MessageType } from "./Message";
 
 const ChatWindow = () => {
   const [messages, setMessageHistory, addMessage] = createHistoryStore();
   const [connect, sendMsg] = createChatWebsocket();
-  const messageList = messages.messageHistory;
+  const messageList: MessageType[] = messages.messageHistory;
 
   let messageInput!: HTMLSpanElement;
 
   createEffect(() => {
-    connect((msg: any) => {
+    connect((msg: MessageType) => {
       addMessage(msg, messageList.length);
     });
   });
@@ -31,6 +32,7 @@ const ChatWindow = () => {
       roomId: "0",
       content: messageInput.textContent
     });
+    messageInput.textContent = "";
   }
 
   return (
@@ -41,7 +43,7 @@ const ChatWindow = () => {
 
       <div>
         <For each={messageList}>{(message, i) => {
-          return <p class="text-white">{message}</p>
+          return <Message content={message.content} author={message.author} />
         }}</For>
       </div>
 

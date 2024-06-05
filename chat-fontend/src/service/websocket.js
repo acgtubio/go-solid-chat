@@ -9,8 +9,8 @@ export const createChatWebsocket = () => {
         }
 
         socket.onmessage = (msg) => {
-            console.log(msg);
-            cb(msg.data);
+            const parsedData = JSON.parse(msg.data);
+            cb(parsedData.body);
         }
 
         socket.onclose = (e) => {
@@ -23,7 +23,6 @@ export const createChatWebsocket = () => {
     }
 
     const sendMsg = (msg) => {
-        console.log("Sending message: ", msg);
         socket.send(JSON.stringify(msg));
     }
 
